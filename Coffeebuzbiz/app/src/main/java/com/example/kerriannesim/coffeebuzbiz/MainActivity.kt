@@ -2,30 +2,29 @@ package com.example.kerriannesim.coffeebuzbiz
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.google.zxing.integration.android.IntentIntegrator
-import kotlinx.android.synthetic.main.activity_main2.*
+import com.example.kerriannesim.coffeebuzbiz.menu.NewCustomerFragment
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
-class Main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main2)
+        setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener {
-            var integrator = IntentIntegrator(this)
-            integrator.setOrientationLocked(true)
-            integrator.setDesiredBarcodeFormats(IntentIntegrator.ONE_D_CODE_TYPES)
-            integrator.setPrompt("Scan a barcode")
-            integrator.setCameraId(0)
-            integrator.initiateScan()
+        fab.setOnClickListener { view ->
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show()
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -35,13 +34,6 @@ class Main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent)
-        if (scanResult != null && data != null) {
-            val re = scanResult.contents
-        }
     }
 
     override fun onBackPressed() {
@@ -70,14 +62,26 @@ class Main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
+        var fragment: Fragment? = null
+        var title = getString(R.string.app_name)
+
         when (item.itemId) {
+            R.id.nav_new_customers -> {
+                fragment = NewCustomerFragment()
+                displaySelectedFragment(fragment)
+            }
             R.id.nav_orders -> {
-                var i = Intent(this, Orders::class.java)
-                startActivity(i)
+
             }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun displaySelectedFragment(fragment: Fragment) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.frame, fragment)
+        fragmentTransaction.commit()
     }
 }
